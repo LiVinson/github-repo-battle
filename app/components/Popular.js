@@ -7,6 +7,7 @@ import {
   FaCodeBranch,
   FaExclamationTriangle
 } from "react-icons/fa"
+import Loading from "./Loading"
 
 import Card from "./Card"
 
@@ -144,7 +145,7 @@ export default class Popular extends React.Component {
           selectedLanguage={selectedLanguage}
           onUpdateLanguage={this.updateSelectedLanguage}
         />
-        {this.isLoading() && <p>LOADING</p>}
+        {this.isLoading() && <Loading text="Fetching Repos" />}
         {error && <p className="center-text error">{error}</p>}
         {repos[selectedLanguage] && (
           <ReposGrid repos={repos[selectedLanguage]} />
