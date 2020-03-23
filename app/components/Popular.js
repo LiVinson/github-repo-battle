@@ -8,8 +8,8 @@ import {
   FaExclamationTriangle
 } from "react-icons/fa"
 import Loading from "./Loading"
-
 import Card from "./Card"
+import Tooltip from "./Tooltip"
 
 //Takes in language user selected and a function to call when a new language is selected.
 function LanguagesNav({ selectedLanguage, onUpdateLanguage }) {
@@ -62,8 +62,10 @@ function ReposGrid({ repos }) {
             >
               <ul className="card-list">
                 <li>
-                  <FaUser color="rgb(255, 191, 116)" size={22} />
-                  <a href={`htps://github.com/${login}`}>{login}</a>
+                  <Tooltip text="Github Username">
+                    <FaUser color="rgb(255, 191, 116)" size={22} />
+                    <a href={`htps://github.com/${login}`}>{login}</a>
+                  </Tooltip>
                 </li>
                 <li>
                   <FaStar color="rgb(255, 215, 0)" size={22} />
