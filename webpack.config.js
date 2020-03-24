@@ -1,5 +1,6 @@
 const path = require("path")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
+const CopyPlugin = require("copy-webpack-plugin")
 
 module.exports = {
   entry: "./app/index.js",
@@ -17,8 +18,9 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: "app/index.html" }) //creates html in dist based on app/index with link to js
+    new HtmlWebpackPlugin({ template: "app/index.html" }), //creates html in dist based on app/index with link to js
     //new webpack.EnvironmentPlgin({"NODE_ENV": "production"}) - Not needed if mode set to production
+    new CopyPlugin([{ from: "_redirects" }])
   ],
   //If production parameter passed when build script in packag.json run, use prod mode. Otherwise use dev mode
   mode: process.env.NODE_ENV === "production" ? "production" : "development", //If prod, auto sets environment, minifies removes comments
