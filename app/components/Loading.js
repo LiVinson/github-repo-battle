@@ -13,18 +13,15 @@ const styles = {
 }
 
 export default class Loading extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      content: props.text
-    }
+  state = {
+    content: this.props.text
   }
+
   componentDidMount() {
     //While content is not 'Loading...', append another '.' ever 300ms. Once three dots, reset to 'Loading'
     const { speed, text } = this.props
 
     this.interval = window.setInterval(() => {
-      console.log("Here")
       this.state.content === text + "..."
         ? this.setState({ content: text })
         : this.setState(({ content }) => ({ content: content + "." }))
