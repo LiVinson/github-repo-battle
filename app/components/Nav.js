@@ -1,7 +1,6 @@
 import React from "react"
 import { ThemeConsumer } from "../contexts/theme"
 import { NavLink } from "react-router-dom"
-import { FaRegBell } from "react-icons/fa"
 
 const activeStyle = {
   color: "rgb(187, 46, 31)"
