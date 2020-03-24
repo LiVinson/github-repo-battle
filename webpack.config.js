@@ -6,7 +6,8 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "index_bundle.js"
+    filename: "index_bundle.js",
+    publicPath: "/"
   },
   module: {
     rules: [
@@ -20,5 +21,8 @@ module.exports = {
     //new webpack.EnvironmentPlgin({"NODE_ENV": "production"}) - Not needed if mode set to production
   ],
   //If production parameter passed when build script in packag.json run, use prod mode. Otherwise use dev mode
-  mode: "development" //If prod, auto sets environment, minifies removes comments
+  mode: "development", //If prod, auto sets environment, minifies removes comments
+  devServer: {
+    historyApiFallback: true
+  }
 }

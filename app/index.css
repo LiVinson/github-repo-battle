@@ -49,6 +49,10 @@ li {
   color: inherit;
 }
 
+.nav li {
+  margin-right: 10px;
+}
+
 /* Repos Grid */
 
 .grid {
@@ -60,6 +64,9 @@ li {
   justify-content: space-around;
 }
 
+.space-between {
+  justify-content: space-between;
+}
 .header-lg {
   font-size: 35px;
   font-weight: 300;
