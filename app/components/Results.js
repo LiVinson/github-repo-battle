@@ -20,6 +20,7 @@ function ProfileList({ profile }) {
     <ul className="card-list">
       <li>
         <FaUser color="rgb(239, 115, 115)" size={22} />
+        {profile.name}
       </li>
       {profile.location && (
         <li>
@@ -38,7 +39,7 @@ function ProfileList({ profile }) {
         </li>
       )}
       <li>
-        <FaUser color="rgb(129, 195, 245)" size={22} />
+        <FaUsers color="rgb(129, 195, 245)" size={22} />
         {profile.followers.toLocaleString()} followers
       </li>
       <li>
