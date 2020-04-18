@@ -6,8 +6,7 @@ import {
   FaBriefcase,
   FaUsers,
   FaUserFriends,
-  FaCode,
-  FaUser
+  FaUser,
 } from "react-icons/fa"
 import Card from "./Card"
 import Loading from "./Loading"
@@ -51,75 +50,89 @@ function ProfileList({ profile }) {
 }
 
 ProfileList.propTypes = {
-  profile: PropType.object.isRequired
+  profile: PropType.object.isRequired,
 }
 
-export default class Results extends React.Component {
-  state = {
+function battleReducer(state, action) {
+  if (action.type === "success") {
+    return {
+      winner: action.winner,
+      loser: action.loser,
+      error: null,
+      loading: false,
+    }
+  } else if (action.type === "error") {
+    return {
+      ...state,
+      error: "There was an error determining a winner. Please try again.",
+      loading: false,
+    }
+  } else {
+    throw new Error("There was an error with that type. Please try again.")
+  }
+}
+
+export default function Results({ location }) {
+  const initialState = {
     winner: null,
     loser: null,
     error: null,
-    loading: true
+    loading: true,
   }
+  const [state, dispatch] = React.useReducer(battleReducer, initialState)
+  const { playerOne, playerTwo } = queryString.parse(location.search)
 
-  componentDidMount() {
-    const { playerOne, playerTwo } = queryString.parse(
-      this.props.location.search
-    )
-
+  React.useEffect(() => {
     battle([playerOne, playerTwo])
-      .then(players => {
-        //If request was successful
-        this.setState({
+      .then((players) => {
+        dispatch({
+          type: "success",
           winner: players[0],
           loser: players[1],
-          error: null,
-          loading: false
         })
       })
-      .catch(error => {
-        this.setState = {
-          error,
-          loading: false
-        }
+      .catch((error) => {
+        console.warn(error.message)
+        dispatch({
+          type: "error",
+        })
       })
-  }
-  render() {
-    const { winner, loser, error, loading } = this.state
-    if (loading === true) {
-      return <Loading />
-    }
+  }, [playerOne, playerTwo])
 
-    if (error) {
-      return <p className="center-text error">{error}</p>
-    }
-    return (
-      <React.Fragment>
-        <div className="grid space-around container-sm">
-          <Card
-            header={winner.score === loser.score ? "Tie" : "Winner"}
-            subheader={`Score: ${winner.score.toLocaleString()}`}
-            avatar={winner.profile.avatar_url}
-            href={winner.profile.html_url}
-            name={winner.profile.login}
-          >
-            <ProfileList profile={winner.profile} />
-          </Card>
-
-          <Card
-            header={loser.score === winner.score ? "Tie" : "Loser"}
-            subheader={`Score: ${loser.score.toLocaleString()}`}
-            avatar={loser.profile.avatar_url}
-            href={loser.profile.html_url}
-            name={loser.profile.login}
-          >
-            <ProfileList profile={loser.profile} />
-          </Card>
-        </div>
-        <Link to="/battle" className="btn btn-dark btn-space">
-          Reset
-        </Link>
-      </React.Fragment>
-    )
+  const { winner, loser, error, loading } = state
+  if (loading) {
+    return <Loading text="Battling" />
   }
+
+  if (error) {
+    return <p className="center-text error">{error}</p>
+  }
+  return (
+    <React.Fragment>
+      <div className="grid space-around container-sm">
+        <Card
+          header={winner.score === loser.score ? "Tie" : "Winner"}
+          subheader={`Score: ${winner.score.toLocaleString()}`}
+          avatar={winner.profile.avatar_url}
+          href={winner.profile.html_url}
+          name={winner.profile.login}
+        >
+          <ProfileList profile={winner.profile} />
+        </Card>
+
+        <Card
+          header={loser.score === winner.score ? "Tie" : "Loser"}
+          subheader={`Score: ${loser.score.toLocaleString()}`}
+          avatar={loser.profile.avatar_url}
+          href={loser.profile.html_url}
+          name={loser.profile.login}
+        >
+          <ProfileList profile={loser.profile} />
+        </Card>
+      </div>
+      <Link to="/battle" className="btn btn-dark btn-space">
+        Reset
+      </Link>
+    </React.Fragment>
+  )
 }
