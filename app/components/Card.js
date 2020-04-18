@@ -10,7 +10,7 @@ export default function Card({
   name,
   children,
 }) {
-  const { theme } = React.useContext(ThemeContext)
+  const theme = React.useContext(ThemeContext)
 
   return (
     <div className={`card bg-${theme}`}>
