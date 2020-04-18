@@ -12,7 +12,7 @@ import Card from "./Card"
 import Tooltip from "./Tooltip"
 
 //Takes in language user selected and a function to call when a new language is selected.
-function LanguagesNav({ selectedLanguage, onUpdateLanguage }) {
+function LanguagesNav({ selectedLanguage, updateLanguage }) {
   const languages = ["All", "JavaScript", "Ruby", "Java", "CSS", "Python"]
   return (
     <ul className="flex-center">
@@ -23,7 +23,7 @@ function LanguagesNav({ selectedLanguage, onUpdateLanguage }) {
             style={
               language === selectedLanguage ? { color: "rgb(187,46,31)" } : null
             }
-            onClick={() => onUpdateLanguage(language)}
+            onClick={() => updateLanguage(language)}
           >
             {language}
           </button>
@@ -35,7 +35,7 @@ function LanguagesNav({ selectedLanguage, onUpdateLanguage }) {
 
 LanguagesNav.propTypes = {
   selectedLanguage: PropTypes.string.isRequired,
-  onUpdateLanguage: PropTypes.func.isRequired,
+  updateLanguage: PropTypes.func.isRequired,
 }
 
 function ReposGrid({ repos }) {
@@ -101,10 +101,6 @@ function reduceRepos(repos, action) {
 }
 
 export default function Popular() {
-  /*
-  Keep track of selectedLanguage, repos, and error across renders. 
-  One piece of s tate may be needed to update others: useReducer or useState?
-  */
   const [language, setLanguage] = React.useState("All")
   const [error, setError] = React.useState(null)
   const [repos, dispatch] = React.useReducer(reduceRepos, {})
