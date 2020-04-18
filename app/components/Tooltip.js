@@ -1,11 +1,11 @@
 import React from "react"
 import PropTypes from "prop-types"
-import Hover from "./Hover"
+import useHover from "./Hover"
 
 const styles = {
   container: {
     position: "relative",
-    display: "flex"
+    display: "flex",
   },
   tooltip: {
     boxSizing: "border-box",
@@ -20,24 +20,24 @@ const styles = {
     marginBottom: "5px",
     color: "#fff",
     textAlign: "center",
-    fontSize: "14px"
-  }
+    fontSize: "14px",
+  },
 }
 
 export default function Tooltip({ text, children }) {
+  const [hovering, attrs] = useHover()
   return (
-    <Hover>
-      {/*Render Props*/}
-      {hovering => (
-        <div style={styles.container}>
-          {hovering === true && <div style={styles.tooltip}>{text}</div>}
-          {children}
-        </div>
-      )}
-    </Hover>
+    <div
+      style={styles.container}
+      onMouseOver={attrs.onMouseOver}
+      onMouseOut={attrs.onMouseOut}
+    >
+      {hovering === true && <div style={styles.tooltip}>{text}</div>}
+      {children}
+    </div>
   )
 }
 
 Tooltip.propTypes = {
-  text: PropTypes.string.isRequired
+  text: PropTypes.string.isRequired,
 }

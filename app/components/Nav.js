@@ -1,6 +1,7 @@
 import React from "react"
 import ThemeContext from "../contexts/theme"
 import { NavLink } from "react-router-dom"
+import Tooltip from "./Tooltip"
 
 const activeStyle = {
   color: "rgb(187, 46, 31)",
@@ -23,6 +24,7 @@ export default function Nav() {
           </NavLink>
         </li>
       </ul>
+
       <button
         style={{ fontSize: 30 }}
         className="btn-clear"
@@ -31,7 +33,13 @@ export default function Nav() {
           setTheme(newTheme)
         }}
       >
-        <span>{theme === "light" ? "🌙" : "🌞"}</span>
+        <span>
+          {theme === "light" ? (
+            <Tooltip text="Select to change color theme to dark">🌙</Tooltip>
+          ) : (
+            <Tooltip text="Select to change color theme to light">🌞</Tooltip>
+          )}
+        </span>
       </button>
     </nav>
   )

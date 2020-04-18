@@ -1,21 +1,17 @@
 import React from "react"
 
-//HOC: Takes in component. Returns a class component that renders the argument component, passing in the hovering state and any other props withHover received
+//replaces HOC or Render Props
+export default function useHover() {
+  const [hovering, setHovering] = React.useState(false)
 
-export default class Hover extends React.Component {
-  state = {
-    hovering: false
+  const mouseOver = () => setHovering(true)
+  const mouseOut = () => setHovering(false)
+
+  const attrs = {
+    onMouseOver: mouseOver,
+    onMouseOut: mouseOut,
   }
 
-  mouseOver = () => this.setState({ hovering: true })
-
-  mouseOut = () => this.setState({ hovering: false })
-
-  render() {
-    return (
-      <div onMouseOver={this.mouseOver} onMouseOut={this.mouseOut}>
-        {this.props.children(this.state.hovering)}
-      </div>
-    )
-  }
+  //Info and Functionality {} that consuming components needs to have: Current hover status and ability to change hover status
+  return [hovering, attrs]
 }
