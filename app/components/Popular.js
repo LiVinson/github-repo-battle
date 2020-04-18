@@ -5,7 +5,7 @@ import {
   FaUser,
   FaStar,
   FaCodeBranch,
-  FaExclamationTriangle
+  FaExclamationTriangle,
 } from "react-icons/fa"
 import Loading from "./Loading"
 import Card from "./Card"
@@ -35,7 +35,7 @@ function LanguagesNav({ selectedLanguage, onUpdateLanguage }) {
 
 LanguagesNav.propTypes = {
   selectedLanguage: PropTypes.string.isRequired,
-  onUpdateLanguage: PropTypes.func.isRequired
+  onUpdateLanguage: PropTypes.func.isRequired,
 }
 
 function ReposGrid({ repos }) {
@@ -48,7 +48,7 @@ function ReposGrid({ repos }) {
           html_url,
           stargazers_count,
           forks,
-          open_issues
+          open_issues,
         } = repo
         const { login, avatar_url } = owner
 
@@ -89,64 +89,53 @@ function ReposGrid({ repos }) {
 }
 
 ReposGrid.propTypes = {
-  repos: PropTypes.array.isRequired
+  repos: PropTypes.array.isRequired,
 }
-export default class Popular extends React.Component {
-  state = {
-    selectedLanguage: "All",
-    repos: {},
-    error: null
-  }
 
-  componentDidMount() {
-    this.updateSelectedLanguage(this.state.selectedLanguage)
+function reduceRepos(repos, action) {
+  return {
+    //Takes current repos object, and copies over the property for the selected language w/ new data
+    ...repos,
+    [action.language]: action.data,
   }
-  //Sets initial selected language, fetches repo info for language if not already save in state.
-  updateSelectedLanguage = language => {
-    this.setState({
-      selectedLanguage: language,
-      error: null
-    })
+}
 
+export default function Popular() {
+  /*
+  Keep track of selectedLanguage, repos, and error across renders. 
+  One piece of s tate may be needed to update others: useReducer or useState?
+  */
+  const [language, setLanguage] = React.useState("All")
+  const [error, setError] = React.useState(null)
+  const [repos, dispatch] = React.useReducer(reduceRepos, {})
+
+  React.useEffect(() => {
     //Checks if data for language fetch is already cached to state
-    if (!this.state.repos[language]) {
+    if (!repos[language]) {
       fetchPopularRepos(language)
-        .then(data => {
-          //Take existing repos object, and update the property for the selected language
-          this.setState(({ repos }) => ({
-            repos: {
-              ...repos,
-              [language]: data
-            }
-          }))
+        .then((data) => {
+          dispatch({ language, data })
         })
-        .catch(error => {
+        .catch((error) => {
           console.warn("Error fetching repos: ", error)
-          this.setState({
-            error: "There was an error fetching the repositories."
-          })
+          setError("There was an error fetching the repositories.")
         })
     }
+  }, [language])
+
+  const isLoading = () => {
+    return !repos[language] && error === null
   }
 
-  isLoading = () => {
-    const { repos, error, selectedLanguage } = this.state
-    return !repos[selectedLanguage] && error === null
-  }
-  render() {
-    const { selectedLanguage, repos, error } = this.state
-    return (
-      <React.Fragment>
-        <LanguagesNav
-          selectedLanguage={selectedLanguage}
-          onUpdateLanguage={this.updateSelectedLanguage}
-        />
-        {this.isLoading() && <Loading text="Fetching Repos" />}
-        {error && <p className="center-text error">{error}</p>}
-        {repos[selectedLanguage] && (
-          <ReposGrid repos={repos[selectedLanguage]} />
-        )}
-      </React.Fragment>
-    )
-  }
+  return (
+    <React.Fragment>
+      <LanguagesNav
+        selectedLanguage={language}
+        onUpdateLanguage={setLanguage}
+      />
+      {isLoading() && <Loading text="Fetching Repos" />}
+      {error && <p className="center-text error">{error}</p>}
+      {repos[language] && <ReposGrid repos={repos[language]} />}
+    </React.Fragment>
+  )
 }
