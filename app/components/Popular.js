@@ -125,10 +125,7 @@ export default function Popular() {
 
   return (
     <React.Fragment>
-      <LanguagesNav
-        selectedLanguage={language}
-        onUpdateLanguage={setLanguage}
-      />
+      <LanguagesNav selectedLanguage={language} updateLanguage={setLanguage} />
       {isLoading() && <Loading text="Fetching Repos" />}
       {error && <p className="center-text error">{error}</p>}
       {repos[language] && <ReposGrid repos={repos[language]} />}
