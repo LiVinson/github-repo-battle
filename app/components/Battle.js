@@ -41,11 +41,12 @@ function Instructions() {
 }
 
 function PlayerInput({ onSubmit, label }) {
-  const [username, setUsername] = React.useState("")
+  const usernameRef = React.useRef("")
   const { theme } = React.useContext(ThemeContext)
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    const username = usernameRef.current.value
     onSubmit(username)
   }
 
@@ -61,13 +62,12 @@ function PlayerInput({ onSubmit, label }) {
           className={`input-${theme}`}
           placeholder="Github username"
           autoComplete="off"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          ref={usernameRef}
         />
         <button
           className={`btn ${theme === "dark" ? "btn-light" : "btn-dark"}`}
           type="submit"
-          disabled={!username}
+          disabled={!usernameRef}
         >
           Submit
         </button>
