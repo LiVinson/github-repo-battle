@@ -8,40 +8,34 @@ const styles = {
     left: 0,
     right: 0,
     marginTop: "20px",
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 }
 
-export default class Loading extends React.Component {
-  state = {
-    content: this.props.text
-  }
+export default function Loading({ text, speed }) {
+  const [content, setContent] = React.useState(text)
+  const id = React.useRef(null)
 
-  componentDidMount() {
-    //While content is not 'Loading...', append another '.' ever 300ms. Once three dots, reset to 'Loading'
-    const { speed, text } = this.props
-
-    this.interval = window.setInterval(() => {
-      this.state.content === text + "..."
-        ? this.setState({ content: text })
-        : this.setState(({ content }) => ({ content: content + "." }))
+  React.useEffect(() => {
+    id.current = window.setInterval(() => {
+      //While content is not = 'Loading...', append another '.' ever 300ms. Once three dots, reset back to 'Loading'
+      content === text + "..." ? setContent(text) : setContent((c) => c + ".")
     }, speed)
-  }
 
-  componentWillUnmount() {
-    window.clearInterval(this.interval)
-  }
-  render() {
-    return <p style={styles.content}>{this.state.content}</p>
-  }
+    return () => {
+      window.clearInterval(id.current)
+    }
+  }, [])
+
+  return <p style={styles.content}>{content}</p>
 }
 
 Loading.propTypes = {
   text: PropTypes.string.isRequired,
-  speed: PropTypes.number.isRequired
+  speed: PropTypes.number.isRequired,
 }
 
 Loading.defaultProps = {
   text: "Loading",
-  speed: 300
+  speed: 300,
 }
