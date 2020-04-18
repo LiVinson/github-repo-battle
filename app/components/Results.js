@@ -55,7 +55,6 @@ ProfileList.propTypes = {
 
 function setResults(state, action) {
   if (action.type === "success") {
-    console.log(action)
     return {
       winner: action.data[0],
       loser: action.data[1],
@@ -70,7 +69,7 @@ function setResults(state, action) {
       loading: false,
     }
   } else {
-    throw new Error()
+    throw new Error("There was an error with the type. Please try again.")
   }
 }
 
@@ -101,8 +100,8 @@ export default function Results({ location }) {
   }, [playerOne, playerTwo])
 
   const { winner, loser, error, loading } = state
-  if (loading === true) {
-    return <Loading />
+  if (loading) {
+    return <Loading text="Battling" />
   }
 
   if (error) {

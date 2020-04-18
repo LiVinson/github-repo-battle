@@ -92,43 +92,60 @@ ReposGrid.propTypes = {
   repos: PropTypes.array.isRequired,
 }
 
-function reduceRepos(repos, action) {
-  return {
-    //Takes current repos object, and copies over the property for the selected language w/ new data
-    ...repos,
-    [action.language]: action.data,
+function popularReducer(state, action) {
+  if ((action.type = "success")) {
+    return {
+      //Takes current repos object, and copies over the property for the selected language w/ new data
+      ...state,
+      error: null,
+      [action.language]: action.repos,
+    }
+  } else if (action.type === "error") {
+    return {
+      ...state,
+      error: "There was an error  fetching repos",
+    }
+  } else {
+    throw new Error("An unknown error occured. Please try again")
   }
 }
 
 export default function Popular() {
   const [language, setLanguage] = React.useState("All")
-  const [error, setError] = React.useState(null)
-  const [repos, dispatch] = React.useReducer(reduceRepos, {})
+  const [state, dispatch] = React.useReducer(popularReducer, { error: null })
+
+  const fetchedLanguages = React.useRef([])
 
   React.useEffect(() => {
     //Checks if data for language fetch is already cached to state
-    if (!repos[language]) {
+    if (!fetchedLanguages.current.includes(language)) {
       fetchPopularRepos(language)
-        .then((data) => {
-          dispatch({ language, data })
+        .then((repos) => {
+          //Since reference to fetchedLanguages does not change, will not cause rerender
+          fetchedLanguages.current.push(language)
+          dispatch({
+            type: "success",
+            language,
+            repos,
+          })
         })
         .catch((error) => {
           console.warn("Error fetching repos: ", error)
-          setError("There was an error fetching the repositories.")
+          dispatch({ type: "error" })
         })
     }
-  }, [language])
+  }, [language, fetchedLanguages])
 
   const isLoading = () => {
-    return !repos[language] && error === null
+    return !state[language] && state.error === null
   }
 
   return (
     <React.Fragment>
       <LanguagesNav selectedLanguage={language} updateLanguage={setLanguage} />
       {isLoading() && <Loading text="Fetching Repos" />}
-      {error && <p className="center-text error">{error}</p>}
-      {repos[language] && <ReposGrid repos={repos[language]} />}
+      {state.error && <p className="center-text error">{state.error}</p>}
+      {state[language] && <ReposGrid repos={state[language]} />}
     </React.Fragment>
   )
 }

@@ -28,7 +28,7 @@ export default function Nav({ toggleTheme }) {
       <button
         style={{ fontSize: 30 }}
         className="btn-clear"
-        onClick={() => toggleTheme}
+        onClick={() => toggleTheme()}
       >
         <span>
           {theme === "light" ? (

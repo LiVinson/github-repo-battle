@@ -12,30 +12,23 @@ const styles = {
   },
 }
 
-export default function Loading({ text, speed }) {
+export default function Loading({ text = "Loading", speed = 300 }) {
   const [content, setContent] = React.useState(text)
-  const id = React.useRef(null)
-
   React.useEffect(() => {
-    id.current = window.setInterval(() => {
+    const id = window.setInterval(() => {
       //While content is not = 'Loading...', append another '.' ever 300ms. Once three dots, reset back to 'Loading'
-      content === text + "..." ? setContent(text) : setContent((c) => c + ".")
+      setContent((content) => (content === text + "..." ? text : content + "."))
     }, speed)
 
     return () => {
-      window.clearInterval(id.current)
+      window.clearInterval(id)
     }
-  }, [])
+  }, [content, text])
 
   return <p style={styles.content}>{content}</p>
 }
 
 Loading.propTypes = {
-  text: PropTypes.string.isRequired,
-  speed: PropTypes.number.isRequired,
-}
-
-Loading.defaultProps = {
-  text: "Loading",
-  speed: 300,
+  text: PropTypes.string,
+  speed: PropTypes.number,
 }
