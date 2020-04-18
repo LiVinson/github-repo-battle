@@ -53,23 +53,22 @@ ProfileList.propTypes = {
   profile: PropType.object.isRequired,
 }
 
-function setResults(state, action) {
+function battleReducer(state, action) {
   if (action.type === "success") {
     return {
-      winner: action.data[0],
-      loser: action.data[1],
+      winner: action.winner,
+      loser: action.loser,
       error: null,
       loading: false,
     }
   } else if (action.type === "error") {
     return {
-      winner: null,
-      loser: null,
+      ...state,
       error: "There was an error determining a winner. Please try again.",
       loading: false,
     }
   } else {
-    throw new Error("There was an error with the type. Please try again.")
+    throw new Error("There was an error with that type. Please try again.")
   }
 }
 
@@ -80,7 +79,7 @@ export default function Results({ location }) {
     error: null,
     loading: true,
   }
-  const [state, dispatch] = React.useReducer(setResults, initialState)
+  const [state, dispatch] = React.useReducer(battleReducer, initialState)
   const { playerOne, playerTwo } = queryString.parse(location.search)
 
   React.useEffect(() => {
@@ -88,11 +87,12 @@ export default function Results({ location }) {
       .then((players) => {
         dispatch({
           type: "success",
-          data: players,
+          winner: players[0],
+          loser: players[1],
         })
       })
       .catch((error) => {
-        console.warn(error)
+        console.warn(error.message)
         dispatch({
           type: "error",
         })
