@@ -13,20 +13,16 @@ const Results = React.lazy(() => import("./components/Results"))
 function App() {
   const [theme, setTheme] = React.useState("light")
 
-  const value = React.useMemo(
-    () => ({
-      theme,
-      setTheme,
-    }),
-    [theme]
-  )
+  const toggleTheme = () => {
+    setTheme((t) => (t === "dark" ? "light" : "dark"))
+  }
 
   return (
     <Router>
-      <ThemeContext.Provider value={value}>
+      <ThemeContext.Provider value={theme}>
         <div className={theme}>
           <div className="container">
-            <Nav />
+            <Nav toggleTheme={toggleTheme} />
             <React.Suspense fallback={<Loading />}>
               <Switch>
                 <Route exact path="/" component={Popular} />

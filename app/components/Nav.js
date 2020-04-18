@@ -7,8 +7,8 @@ const activeStyle = {
   color: "rgb(187, 46, 31)",
 }
 
-export default function Nav() {
-  const { theme, setTheme } = React.useContext(ThemeContext)
+export default function Nav({ toggleTheme }) {
+  const { theme } = React.useContext(ThemeContext)
 
   return (
     <nav className="row space-between">
@@ -28,10 +28,7 @@ export default function Nav() {
       <button
         style={{ fontSize: 30 }}
         className="btn-clear"
-        onClick={() => {
-          const newTheme = theme === "light" ? "dark" : "light"
-          setTheme(newTheme)
-        }}
+        onClick={() => toggleTheme}
       >
         <span>
           {theme === "light" ? (
